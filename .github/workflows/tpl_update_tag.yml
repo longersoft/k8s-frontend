@@ -1,0 +1,22 @@
+on:
+  workflow_call:
+    secrets:
+      DEVOPS_DEPLOY_TOKEN:
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  UpdateTag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code from devops repo
+        uses: actions/checkout@v4
+        with:
+          repository: "longersoft/k8s-devops"
+          path: "k8s-devops"
+          fetch-depth: 0
+          ref: "dev"
+          token: "${{ secrets.DEVOPS_DEPLOY_TOKEN }}"
