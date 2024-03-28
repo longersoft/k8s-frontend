@@ -29,9 +29,10 @@ jobs:
   CodeBuild:
     name: Code Build
     needs: SonarScan
-    uses: ./.github/workflows/tpl_build.yml
+    uses: ./.github/workflows/tpl_build_dockerhub.yml
     with:
       aws-region: "us-east-2"
+      aws-id: "012345678910"
       ecr-name: "k8s-frontend"
   
   UpdateTag:
