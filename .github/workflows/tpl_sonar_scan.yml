@@ -2,10 +2,8 @@ on:
   workflow_call:
     secrets:
       SONAR_TOKEN:
-        type: string
         required: true
       SONAR_HOST_URL:
-        type: string
         required: true
 
 jobs:
