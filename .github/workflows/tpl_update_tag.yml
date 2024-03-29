@@ -37,4 +37,4 @@ jobs:
           author_email: ci@testing.com
           committer_name: CI
           committer_email: ci@testing.com
-          message: "CI: update image tag ${{ github.event.inputs.tag }} for ${{ github.event.inputs.service }}"
+          message: "CI: update image tag ${{ inputs.img-tag }}"

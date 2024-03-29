@@ -31,7 +31,7 @@ jobs:
       - name: Set tag
         id: set_tag
         run: |
-          TAG="v${GITHUB_SHA::7}"
+          TAG="${GITHUB_SHA::7}"
           
           echo "img_tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "TAG=$TAG"
