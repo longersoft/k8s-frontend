@@ -15,7 +15,42 @@ jobs:
         with:
           fetch-depth: 0
       
-      - uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # - uses: sonarsource/sonarqube-scan-action@master
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Set up SonarQube Server and Run Analysis
+        # env:
+        #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          # SONAR_TOKEN="123456"
+          SONAR_HOST_URL="http://localhost:9000"
+          SONAR_USERNAME="admin"
+          SONAR_PASSWORD="admin"
+
+          # Start SonarQube Server as a Docker container
+          docker run -d --name sonarqube -p 9000:9000 sonarqube
+
+          # Wait for SonarQube to be up and running
+          sleep 60s  # Adjust the duration as per your SonarQube startup time
+          curl ${SONAR_HOST_URL}
+
+          current_timestamp=$(date +%s)
+          expiration_timestamp=$(date -v+1d +%s)
+          expiration_date=$(date -r $expiration_timestamp +%Y-%m-%d)
+          response=$(curl -s -X POST -u ${SONAR_USERNAME}:${SONAR_PASSWORD} "${SONAR_HOST_URL}/api/user_tokens/generate" \
+            -d "name=sonarqube_token_${current_timestamp}" -d "type=GLOBAL_ANALYSIS_TOKEN" -d "expirationDate=$expiration_date")
+          SONAR_TOKEN=$(echo "$response" | jq -r '.token')
+          echo "SonarQube token: ${SONAR_TOKEN}"
+
+          # Create a new SonarQube project
+          PROJECT_KEY="frontend"
+          PROJECT_NAME="frontend"
+          curl -u ${SONAR_USERNAME}:${SONAR_PASSWORD} -X POST "${SONAR_HOST_URL}/api/projects/create" -d "name=${PROJECT_NAME}" -d "key=${PROJECT_KEY}" -d "project=${PROJECT_NAME}" -d "mainBranch=main"
+
+          # Run SonarQube analysis
+          docker run --rm -v $(pwd):/usr/src --network host sonarsource/sonar-scanner-cli \
+            -Dsonar.host.url=${SONAR_HOST_URL} \
+            -Dsonar.projectKey=${PROJECT_KEY} \
+            -Dsonar.login=${SONAR_TOKEN}
