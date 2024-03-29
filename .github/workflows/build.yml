@@ -34,6 +34,9 @@ jobs:
       aws-region: "us-east-2"
       aws-id: "012345678910"
       ecr-name: "k8s-frontend"
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   
   UpdateTag:
     name: Update Tag

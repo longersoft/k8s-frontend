@@ -24,7 +24,6 @@ jobs:
         # env:
         #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          # SONAR_TOKEN="123456"
           SONAR_HOST_URL="http://localhost:9000"
           SONAR_USERNAME="admin"
           SONAR_PASSWORD="admin"
@@ -34,11 +33,10 @@ jobs:
 
           # Wait for SonarQube to be up and running
           sleep 60s  # Adjust the duration as per your SonarQube startup time
-          curl ${SONAR_HOST_URL}
-
+          
+          # Generate temporary token
           current_timestamp=$(date +%s)
-          expiration_timestamp=$(date -v+1d +%s)
-          expiration_date=$(date -r $expiration_timestamp +%Y-%m-%d)
+          expiration_date=$(date -d "+30 days" +%Y-%m-%d)
           response=$(curl -s -X POST -u ${SONAR_USERNAME}:${SONAR_PASSWORD} "${SONAR_HOST_URL}/api/user_tokens/generate" \
             -d "name=sonarqube_token_${current_timestamp}" -d "type=GLOBAL_ANALYSIS_TOKEN" -d "expirationDate=$expiration_date")
           SONAR_TOKEN=$(echo "$response" | jq -r '.token')
