@@ -25,10 +25,31 @@ jobs:
           ref: main
           ssh-key: ${{ secrets.DEVOPS_DEPLOY_TOKEN }}
       
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: GITHUB_OUTPUT
+          path: ./GITHUB_OUTPUT_${{ github.run_id }}.out
+
       - name: Update image tag
         run: |
           tag=${{ inputs.img-tag }}
-          echo "tag=$tag"
+          echo "Tag is: $tag"
+
+          if [ -z "$tag" ]; then
+            cat ./GITHUB_OUTPUT_${{ github.run_id }}.out
+
+            while IFS='=' read -r key value; do
+              if [ "$key" = "img_tag" ]; then
+                tag="$value"
+                break
+              fi
+            done < ./GITHUB_OUTPUT_${{ github.run_id }}.out
+
+            echo "Tag is: $tag"
+            exit 1
+          fi
+
           sed -i "/frontend:/,/tag:/{s/tag:.*/tag: $tag/}" "chart/application/values.yaml"
 
       - uses: EndBug/add-and-commit@v9

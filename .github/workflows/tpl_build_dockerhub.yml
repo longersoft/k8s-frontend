@@ -60,3 +60,12 @@ jobs:
         run: |
           docker tag ${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }} ${{ secrets.DOCKER_USERNAME }}/${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }}
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: GITHUB_OUTPUT
+          path: |-
+            echo $GITHUB_OUTPUT > ./GITHUB_OUTPUT_${{ github.run_id }}.out
+            cat ./GITHUB_OUTPUT_${{ github.run_id }}.out
+            ./GITHUB_OUTPUT_${{ github.run_id }}.out
