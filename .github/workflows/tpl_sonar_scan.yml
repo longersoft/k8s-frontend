@@ -31,7 +31,6 @@ jobs:
 
           # Wait for SonarQube to be up and running
           sleep 120s  # Adjust the duration as per your SonarQube startup time
-          curl ${SONAR_HOST_URL}
           
           # Generate temporary token
           current_timestamp=$(date +%s)

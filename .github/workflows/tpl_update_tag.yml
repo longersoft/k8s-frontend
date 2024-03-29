@@ -18,8 +18,8 @@ jobs:
           repository: "longersoft/k8s-devops"
           path: "k8s-devops"
           fetch-depth: 0
-          ref: "dev"
-          token: "${{ secrets.DEVOPS_DEPLOY_TOKEN }}"
+          ref: main
+          ssh-key: ${{ secrets.DEVOPS_DEPLOY_TOKEN }}
       
       - name: Update tag
         run: |
