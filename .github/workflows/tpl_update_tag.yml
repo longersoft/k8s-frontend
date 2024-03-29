@@ -36,6 +36,10 @@ jobs:
           tag=${{ inputs.img-tag }}
           echo "Tag is: $tag"
 
+          pwd
+          ls -la
+          ls -la ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
+
           if [ -z "$tag" ]; then
             cat ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
 

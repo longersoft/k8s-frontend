@@ -36,7 +36,7 @@ jobs:
           echo "img_tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "TAG=$TAG"
 
-          echo $GITHUB_OUTPUT > ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
+          echo "img_tag=$TAG" > ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
           cat ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
 
       - name: Login to Docker Hub
