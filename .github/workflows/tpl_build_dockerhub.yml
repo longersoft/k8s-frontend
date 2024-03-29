@@ -17,7 +17,7 @@ on:
         required: true
 
 jobs:
-  Build:
+  CodeBuild:
     runs-on: ubuntu-latest
     outputs:
       img_tag: ${{ steps.set_tag.outputs.img_tag }}
@@ -36,6 +36,9 @@ jobs:
           echo "img_tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "TAG=$TAG"
 
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
       - name: Check image exists
         run: |
           response=$(curl -s "https://hub.docker.com/v2/repositories/library/${{ inputs.ecr-name }}/tags/")
@@ -46,9 +49,6 @@ jobs:
             echo "Image ${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }} exists on Docker Hub."
             exit 1
           fi
-
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker Image
         run: |

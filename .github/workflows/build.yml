@@ -30,8 +30,6 @@ jobs:
     name: Code Build
     # needs: SonarScan
     uses: ./.github/workflows/tpl_build_dockerhub.yml
-    outputs:
-      img_tag: ${{ steps.set_tag.outputs.img_tag }}
     with:
       aws-region: "us-east-2"
       aws-id: "012345678910"
