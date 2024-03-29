@@ -2,14 +2,21 @@ on:
   workflow_call:
     inputs:
       aws-region:
-        required: false
         type: string
+        required: false
       aws-id:
-        required: false
         type: string
+        required: false
       ecr-name:
-        required: false
         type: string
+        required: false
+    secrets:
+      DOCKER_USERNAME:
+        type: string
+        required: true
+      DOCKER_PASSWORD:
+        type: string
+        required: true
 
 jobs:
   Build:

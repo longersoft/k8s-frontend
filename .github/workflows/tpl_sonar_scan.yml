@@ -2,8 +2,10 @@ on:
   workflow_call:
     secrets:
       SONAR_TOKEN:
+        type: string
         required: true
       SONAR_HOST_URL:
+        type: string
         required: true
 
 jobs:
@@ -21,8 +23,6 @@ jobs:
       #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Set up SonarQube Server and Run Analysis
-        # env:
-        #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           SONAR_HOST_URL="http://localhost:9000"
           SONAR_USERNAME="admin"
