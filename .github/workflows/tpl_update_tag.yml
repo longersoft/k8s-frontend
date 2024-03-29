@@ -29,11 +29,7 @@ jobs:
         run: |
           tag=${{ inputs.img-tag }}
           echo "tag=$tag"
-          tag2=$img_tag
-          echo "tag2=$tag2"
           sed -i "/frontend:/,/tag:/{s/tag:.*/tag: $tag/}" "chart/application/values.yaml"
-        # env:
-        #   img_tag: ${{ inputs.img-tag }}
 
       - uses: EndBug/add-and-commit@v9
         with:
