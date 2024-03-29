@@ -3,6 +3,10 @@ on:
     secrets:
       DEVOPS_DEPLOY_TOKEN:
         required: true
+    inputs:
+      img-tag:
+        type: string
+        required: false
 
 permissions:
   id-token: write
@@ -21,8 +25,20 @@ jobs:
           ref: main
           ssh-key: ${{ secrets.DEVOPS_DEPLOY_TOKEN }}
       
-      - name: Update tag
+      - name: Update image tag
         run: |
-          pwd
-          ls -la
-          ls -la ./k8s-devops
+          tag=${{ inputs.img-tag }}
+          echo "tag=$tag"
+          tag2=$img_tag
+          echo "tag2=$tag2"
+          sed -i "/frontend:/,/tag:/{s/tag:.*/tag: $tag/}" "chart/application/values.yaml"
+        # env:
+        #   img_tag: ${{ inputs.img-tag }}
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          author_name: CI
+          author_email: ci@testing.com
+          committer_name: CI
+          committer_email: ci@testing.com
+          message: "CI: update image tag ${{ github.event.inputs.tag }} for ${{ github.event.inputs.service }}"
