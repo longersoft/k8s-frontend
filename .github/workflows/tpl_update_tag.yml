@@ -29,7 +29,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: GITHUB_OUTPUT
-          path: ./GITHUB_OUTPUT_${{ github.run_id }}.out
+          path: ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
 
       - name: Update image tag
         run: |
@@ -37,14 +37,14 @@ jobs:
           echo "Tag is: $tag"
 
           if [ -z "$tag" ]; then
-            cat ./GITHUB_OUTPUT_${{ github.run_id }}.out
+            cat ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
 
             while IFS='=' read -r key value; do
               if [ "$key" = "img_tag" ]; then
                 tag="$value"
                 break
               fi
-            done < ./GITHUB_OUTPUT_${{ github.run_id }}.out
+            done < ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
 
             echo "Tag is: $tag"
             exit 1
