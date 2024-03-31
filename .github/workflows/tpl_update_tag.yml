@@ -32,13 +32,10 @@ jobs:
           path: ${{ github.workspace }}
 
       - name: Update image tag
+        id: update_tag
         run: |
           tag=${{ inputs.img-tag }}
           echo "Tag is: $tag"
-
-          pwd
-          ls -la
-          ls -la ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
 
           if [ -z "$tag" ]; then
             cat ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
@@ -51,10 +48,11 @@ jobs:
             done < ${{ github.workspace }}/GITHUB_OUTPUT_${{ github.run_id }}.out
 
             echo "Tag is: $tag"
-            exit 1
           fi
 
-          sed -i "/frontend:/,/tag:/{s/tag:.*/tag: $tag/}" "chart/application/values.yaml"
+          echo "img_tag=$tag" >> "$GITHUB_OUTPUT"
+
+          sed -i "/frontend:/,/tag:/{s/tag:.*/tag: $tag/}" "charts/application/values.yaml"
 
       - uses: EndBug/add-and-commit@v9
         with:
