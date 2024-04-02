@@ -15,6 +15,8 @@ permissions:
 jobs:
   UpdateTag:
     runs-on: ubuntu-latest
+    outputs:
+      img_tag: ${{ steps.update_tag.outputs.img_tag }}
     steps:
       - name: Checkout code from devops repo
         uses: actions/checkout@v4
@@ -62,4 +64,4 @@ jobs:
           author_email: ci@testing.com
           committer_name: CI
           committer_email: ci@testing.com
-          message: "CI: update image tag ${{ inputs.img-tag }}"
+          message: "CI: update image tag ${{ steps.update_tag.outputs.img_tag }}"
