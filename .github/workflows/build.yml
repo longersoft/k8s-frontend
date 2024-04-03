@@ -41,6 +41,7 @@ jobs:
   UpdateTag:
     name: Update Tag
     needs: CodeBuild
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/tpl_update_tag.yml
     with:
       img-tag: ${{ needs.CodeBuild.outputs.img_tag }}

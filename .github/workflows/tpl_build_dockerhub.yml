@@ -53,18 +53,20 @@ jobs:
             exit 1
           fi
 
-      # - name: Build Docker Image
-      #   run: |
-      #     docker image prune -a --force --filter "until=24h" > /dev/null 2>&1
-      #     echo "TAG=${{ steps.set_tag.outputs.img_tag }}"
-      #     docker build -t ${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }} .
+      - name: Build Docker Image
+        run: |
+          docker image prune -a --force --filter "until=24h" > /dev/null 2>&1
+          echo "TAG=${{ steps.set_tag.outputs.img_tag }}"
+          docker build -t ${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }} .
 
-      # - name: Push Docker image
-      #   run: |
-      #     docker tag ${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }} ${{ secrets.DOCKER_USERNAME }}/${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }}
-      #     docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }}
+      - name: Push Docker image
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: |
+          docker tag ${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }} ${{ secrets.DOCKER_USERNAME }}/${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.ecr-name }}:${{ steps.set_tag.outputs.img_tag }}
 
       - name: Upload Artifacts
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: actions/upload-artifact@v4
         with:
           name: GITHUB_OUTPUT
